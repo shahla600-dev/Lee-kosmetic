@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lee Kosmetic</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap">
+<style>
+:root{--bg:#f7f1f6;--surface:#fff;--ink:#2b1a33;--muted:#6f5d78;--accent:#c23b73;--accent-ink:#fff;--soft:#efe2ee;--line:#e3d3e1;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1a1020;--surface:#26172e;--ink:#f5eaf3;--muted:#b9a6c2;--accent:#e0679b;--accent-ink:#1a1020;--soft:#33213d;--line:#46304f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1a1020;--surface:#26172e;--ink:#f5eaf3;--muted:#b9a6c2;--accent:#e0679b;--accent-ink:#1a1020;--soft:#33213d;--line:#46304f;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Cairo",Tahoma,sans-serif;line-height:1.7}
+header{padding:44px 20px 28px;max-width:760px;margin:auto}
+h1{font-size:clamp(2.4rem,9vw,3.8rem);font-weight:800;margin:0;line-height:1.1;letter-spacing:-.5px}
+header p{color:var(--muted);margin:10px 0 0;max-width:34ch;font-size:1.05rem}
+main{max-width:760px;margin:auto;padding:0 16px 100px;display:grid;gap:14px}
+.card{display:grid;grid-template-columns:96px 1fr;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px;cursor:pointer;text-align:start;font:inherit;color:inherit;width:100%}
+.card:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.pic{width:96px;height:96px;border-radius:14px;background:var(--soft);display:grid;place-items:center;font-size:2.6rem;overflow:hidden}
+.pic img{width:100%;height:100%;object-fit:cover}
+.card h2{font-size:1.15rem;margin:2px 0 0}
+.card .d{color:var(--muted);font-size:.92rem;margin:0}
+.price{font-weight:800;color:var(--accent);margin-top:4px}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:12px;padding:12px 20px;font:inherit;font-weight:800;cursor:pointer;width:100%}
+.btn.alt{background:var(--soft);color:var(--ink)}
+dialog{border:0;border-radius:22px;padding:0;width:min(560px,94vw);max-height:90vh;background:var(--surface);color:var(--ink);font-family:inherit}
+dialog::backdrop{background:rgba(20,8,26,.55)}
+.in{padding:20px;display:grid;gap:12px}
+.in .pic{width:100%;height:170px;font-size:4.5rem}
+.in h3{margin:0;font-size:1.5rem}
+.in h4{margin:8px 0 0;font-size:1rem;color:var(--accent)}
+.in p,.in ul{margin:0;color:var(--ink)}
+.in ul{padding-inline-start:20px}
+label{display:grid;gap:4px;font-weight:600;font-size:.92rem}
+input,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px}
+.row{display:flex;gap:10px}
+.x{justify-self:end;background:none;border:0;color:var(--muted);font:inherit;cursor:pointer}
+.tot{font-weight:800;font-size:1.1rem}
+.bar{position:fixed;inset-inline:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:736px;margin:auto;display:none;justify-content:space-between;align-items:center;background:var(--accent);color:var(--accent-ink);border:0;border-radius:16px;padding:14px 18px;font:inherit;font-weight:800;cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,.25)}
+.bar.on{display:flex}
+.it{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.qty{display:flex;align-items:center;gap:8px}
+.qty button{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--soft);color:var(--ink);font:inherit;font-weight:800;cursor:pointer}
+.note{color:var(--muted);font-size:.85rem}
+</style>
+</head>
+<body>
+<header>
+<h1>Lee Kosmetic</h1>
+<p>منتجات عناية بالبشرة والشعر. اختاري منتجاتك وأضيفيها إلى السلة ثم أكدي طلبك.</p>
+</header>
+<main id="list"></main>
+<button class="bar" id="bar"></button>
+<dialog id="dlg"><div class="in" id="box"></div></dialog>
+
+<script>
+// ===== عدّلي هذا الجزء فقط =====
+const CURRENCY = "د.ع";
+const PRODUCTS = [
+ {name:"كريم مرطب يومي", emoji:"🧴", price:15000, img:"",
+  desc:"ترطيب خفيف يدوم طوال اليوم.",
+  ingredients:["زبدة الشيا","حمض الهيالورونيك","فيتامين E"],
+  use:"ضعي كمية صغيرة على الوجه والرقبة صباحاً ومساءً بعد التنظيف."},
+ {name:"سيروم فيتامين C", emoji:"🍊", price:25000, img:"",
+  desc:"لإشراقة البشرة وتقليل البقع الداكنة.",
+  ingredients:["فيتامين C","جلسرين نباتي","مستخلص البرتقال"],
+  use:"3 قطرات على بشرة نظيفة في الصباح، ثم استخدمي واقي الشمس."},
+ {name:"ماسك الطين", emoji:"🌿", price:12000, img:"",
+  desc:"تنظيف عميق للمسام.",
+  ingredients:["طين كاولين","مستخلص الصبار","زيت اللافندر"],
+  use:"ضعي طبقة رقيقة لمدة 10 دقائق، ثم اغسليه بالماء الدافئ، مرتين أسبوعياً."}
+];
+// ================================
+
+const $=s=>document.querySelector(s), dlg=$("#dlg"), box=$("#box"), bar=$("#bar");
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pic=p=>`<div class="pic">${p.img?`<img src="${esc(p.img)}" alt="${esc(p.name)}">`:p.emoji||"✨"}</div>`;
+const cart={};
+const count=()=>Object.values(cart).reduce((a,b)=>a+b,0);
+const total=()=>Object.entries(cart).reduce((a,[i,q])=>a+PRODUCTS[i].price*q,0);
+const money=n=>n.toLocaleString("en-US")+" "+CURRENCY;
+function refresh(){const n=count();bar.className="bar"+(n?" on":"");bar.innerHTML=`<span>السلة (${n})</span><span>${money(total())}</span>`}
+function open_(){if(!dlg.open)dlg.showModal()}
+
+$("#list").innerHTML=PRODUCTS.map((p,i)=>`<button class="card" data-i="${i}">${pic(p)}<div>
