@@ -82,7 +82,4 @@ const cart={};
 const count=()=>Object.values(cart).reduce((a,b)=>a+b,0);
 const total=()=>Object.entries(cart).reduce((a,[i,q])=>a+PRODUCTS[i].price*q,0);
 const money=n=>n.toLocaleString("en-US")+" "+CURRENCY;
-function refresh(){const n=count();bar.className="bar"+(n?" on":"");bar.innerHTML=`<span>السلة (${n})</span><span>${money(total())}</span>`}
-function open_(){if(!dlg.open)dlg.showModal()}
-
-$("#list").innerHTML=PRODUCTS.map((p,i)=>`<button class="card" data-i="${i}">${pic(p)}<div>
+function refresh(){const n=count();bar.className="bar"+(n?" on":"");bar.innerHTML
